@@ -1,7 +1,7 @@
 class Boid with
     var _SDL_Rect quad;
 do
-    int id = &this; 
+    var int id = (int)&this; 
 
     quad.w = 20;
     quad.h = 20;
@@ -12,15 +12,15 @@ do
         clr.r = _rand()%255;
         clr.g = _rand()%255;
         clr.b = _rand()%255;
-    int radius = 10;
+    var int radius = 10;
     par do
-        int ms;
-        Boid[] near;
-        int id_ans;
+        var int ms;
+        pool Boid[] near;
+        var int id_ans;
         every ms in SDL_DT do
             //circular vision
-            emit VISION => (id,quad.x,quad.y,radius);
-            (id_ans,near) = await VISION_ANSWER until (id_ans==id);
+            emit vision => (id,quad.x,quad.y,radius);
+            (id_ans,near) = await vision_answer until (id_ans==id);
         end
     with
         every SDL_REDRAW do
