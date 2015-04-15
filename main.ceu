@@ -4,7 +4,7 @@ input void SDL_REDRAW;
 input void SDL_QUIT;
 input int SDL_DT;
 event (int,int,int,int) vision;
-event (int,Boid[]) vision_answer;
+event (int,int,int) vision_answer;
 #include "boid.ceu"
 
 native do
@@ -52,21 +52,29 @@ with
     end
 with
     pool Boid[20] boids;
-    every 500ms do
-        spawn Boid in boids;
-    end
-with
-    var int x,y,radius,id;
-    pool Boid[] response;
-    loop do
-      (id,x,y,radius) = await vision;
-      loop (Boid *)b in boids do
-        if _sqrt( _pow(x - b:quad.x,2) + _pow(y - b:quad.y,2) ) < rad then
-            //add b to response
-            emit vision_answer => (id,response);
+    par do
+        every 500ms do
+            spawn Boid in boids;
         end
-      end
-    end    
+    with
+        var int x,y,radius,id;
+        var int response_x = 0;
+        var int response_y = 0;
+        loop do
+            (id,x,y,radius) = await vision;
+            _printf("vision\n");
+            var int count = 0;
+            loop (Boid *)b in boids do
+                if _sqrt( _pow(x - b:quad.x,2) + _pow(y - b:quad.y,2) ) < radius then
+                    response_x = response_x + b:quad.x; 
+                    response_y = response_y + b:quad.y; 
+                end
+            end
+            response_x = response_x/count;
+            response_y = response_y/count;
+            emit vision_answer => (id,response_x,response_y);
+        end    
+    end
 with
     every SDL_REDRAW do
         _SDL_RenderPresent(_REN);
