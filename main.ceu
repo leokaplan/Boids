@@ -9,6 +9,8 @@ native do
     int REN_W, REN_H;
 end
 
+_srand(_time(null));
+
 var _SDL_Window[] win;
     finalize
         win = _SDL_CreateWindow("SDL 1", _SDL_WINDOWPOS_CENTERED,

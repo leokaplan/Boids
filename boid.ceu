@@ -4,13 +4,13 @@ do
 
     quad.w = 20;
     quad.h = 20;
-    quad.x = 100;//random
-    quad.y = 100;//random
+    quad.x = _rand()%_REN_W;//random
+    quad.y = _rand()%_REN_H;//random
 
     var _SDL_Color clr;
-        clr.r = 0xFF;//random
-        clr.g = 0x00;//random
-        clr.b = 0x00;//random
+        clr.r = _rand()%255;//random
+        clr.g = _rand()%255;//random
+        clr.b = _rand()%255;//random
 
     par do
         every 1s do
