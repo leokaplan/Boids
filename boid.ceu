@@ -10,9 +10,13 @@ do
         clr.r = _rand()%255;
         clr.g = _rand()%255;
         clr.b = _rand()%255;
-
+    int radius = 10;
     par do
-        every 1s do
+        int ms;
+        every ms in SDL_DT do
+            //circular vision
+            emit VISION => (quad.x,quad.y,radius);
+            Boid[] near = await VISION_ANSWER;
         end
     with
         every SDL_REDRAW do
