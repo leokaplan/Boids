@@ -48,8 +48,10 @@ with
         _SDL_RenderFillRect(_REN, &bg);
     end
 with
-    var Boid boid;
-    await FOREVER;
+    pool Boid[20] boids;
+    every 500ms do
+        spawn Boid in boids;
+    end
 with
     every SDL_REDRAW do
         _SDL_RenderPresent(_REN);
