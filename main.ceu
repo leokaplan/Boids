@@ -2,6 +2,7 @@
 
 input void SDL_REDRAW;
 input void SDL_QUIT;
+#include "boid.ceu"
 
 native do
     SDL_Renderer* REN = NULL;
@@ -33,36 +34,22 @@ var _SDL_Rect bg;
     bg.y = 0;
 
 var _SDL_Color bg_clr;
-    bg_clr.r = 0xFF;
-    bg_clr.g = 0xFF;
+    bg_clr.r = 0x00;
+    bg_clr.g = 0x00;
     bg_clr.b = 0x00;
-
-var _SDL_Rect fg;
-    fg.w = 100;
-    fg.h = 100;
-    fg.x = 100;
-    fg.y = 100;
-
-var _SDL_Color fg_clr;
-    fg_clr.r = 0xFF;
-    fg_clr.g = 0x00;
-    fg_clr.b = 0x00;
 
 par/or do
     await SDL_QUIT;
 with
-    every 1s do
-        fg.x = fg.x + 10;
-        fg.y = fg.y + 10;
-    end
-with
     every SDL_REDRAW do
         _SDL_SetRenderDrawColor(_REN, bg_clr.r,bg_clr.g,bg_clr.b,0xFF);
         _SDL_RenderFillRect(_REN, &bg);
-
-        _SDL_SetRenderDrawColor(_REN, fg_clr.r,fg_clr.g,fg_clr.b,0xFF);
-        _SDL_RenderFillRect(_REN, &fg);
-
+    end
+with
+    var Boid boid;
+    await FOREVER;
+with
+    every SDL_REDRAW do
         _SDL_RenderPresent(_REN);
     end
 end

@@ -1,0 +1,26 @@
+class Boid with
+    var _SDL_Rect quad;
+do
+
+    quad.w = 20;
+    quad.h = 20;
+    quad.x = 100;//random
+    quad.y = 100;//random
+
+    var _SDL_Color clr;
+        clr.r = 0xFF;//random
+        clr.g = 0x00;//random
+        clr.b = 0x00;//random
+
+    par do
+        every 1s do
+            quad.x = quad.x + 10;
+            quad.y = quad.y + 10;
+        end
+    with
+        every SDL_REDRAW do
+            _SDL_SetRenderDrawColor(_REN, clr.r,clr.g,clr.b,0xFF);
+            _SDL_RenderFillRect(_REN, &quad);
+        end
+    end
+end
