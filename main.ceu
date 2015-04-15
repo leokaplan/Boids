@@ -3,8 +3,8 @@
 input void SDL_REDRAW;
 input void SDL_QUIT;
 input int SDL_DT;
-event (int,int,int) VISION;
-event Boid[] VISION_ANSWER;
+event (int,int,int,int) VISION;
+event (int,Boid[]) VISION_ANSWER;
 #include "boid.ceu"
 
 native do
@@ -56,14 +56,14 @@ with
         spawn Boid in boids;
     end
 with
-    int x,y,radius;
+    int x,y,radius,id;
     Boid[] response;
     loop do
-        (x,y,radius) = await VISION;
+      (id,x,y,radius) = await VISION;
       loop (Boid *)b in boids do
         if _sqrt( _pow(x - b:quad.x,2) + _pow(y - b:quad.y,2) ) < rad
             //add b to response
-            emit VISION_ANSWER => response;
+            emit VISION_ANSWER => (id,response);
         end
       end
     end    
