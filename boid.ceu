@@ -2,6 +2,7 @@ class Boid with
     var _SDL_Rect quad;
     event (int,int,int,int) vision;
     event (int,int,int) vision_answer;
+    var int radius = 10;
 do
     var int id = (int)&this; 
     _printf("%d\n",id);
@@ -14,25 +15,8 @@ do
         clr.r = _rand()%255;
         clr.g = _rand()%255;
         clr.b = _rand()%255;
-    var int radius = 10;
-    par do
-        var int ms;
-        var int centroid_x, centroid_y;
-        var int id_ans;
-        loop do 
-            ms = await SDL_DT;
-            //circular vision
-            emit vision => (id,quad.x,quad.y,radius);
-            (id_ans,centroid_x,centroid_y) = await vision_answer;// until (id_ans==id);
-            _printf("id %d ida %d\n",id,id_ans);
-            _printf("centroid%d %d\n",centroid_x,centroid_y);
-            quad.x = quad.x + centroid_x;
-            quad.y = quad.y + centroid_y;
-        end
-    with
-        every SDL_REDRAW do
-            _SDL_SetRenderDrawColor(_REN, clr.r,clr.g,clr.b,0xFF);
-            _SDL_RenderFillRect(_REN, &quad);
-        end
+    every SDL_REDRAW do
+        _SDL_SetRenderDrawColor(_REN, clr.r,clr.g,clr.b,0xFF);
+        _SDL_RenderFillRect(_REN, &quad);
     end
 end
