@@ -1,0 +1,87 @@
+#include "sdl.ceu"
+
+input void SDL_REDRAW;
+input void SDL_QUIT;
+input int SDL_DT;
+event (int,int,int,int) vision;
+event (int,int,int) vision_answer;
+#include "boid.ceu"
+
+native do
+    SDL_Renderer* REN = NULL;
+    int REN_W, REN_H;
+end
+
+_srand(_time(null));
+
+var _SDL_Window[] win;
+    finalize
+        win = _SDL_CreateWindow("SDL 1", _SDL_WINDOWPOS_CENTERED,
+                                         _SDL_WINDOWPOS_CENTERED,
+                                         800, 480,
+                                         _SDL_WINDOW_SHOWN);
+    with
+        _SDL_DestroyWindow(win);
+    end
+
+_SDL_GetWindowSize(win, &_REN_W, &_REN_H);
+
+finalize
+    _REN = _SDL_CreateRenderer(win, -1, 0);
+with
+    _SDL_DestroyRenderer(_REN);
+end
+
+var _SDL_Rect bg;
+    bg.w = _REN_W;
+    bg.h = _REN_H;
+    bg.x = 0;
+    bg.y = 0;
+
+var _SDL_Color bg_clr;
+    bg_clr.r = 0x00;
+    bg_clr.g = 0x00;
+    bg_clr.b = 0x00;
+
+par/or do
+    await SDL_QUIT;
+with
+    every SDL_REDRAW do
+        _SDL_SetRenderDrawColor(_REN, bg_clr.r,bg_clr.g,bg_clr.b,0xFF);
+        _SDL_RenderFillRect(_REN, &bg);
+    end
+with
+    pool Boid[20] boids;
+    par do
+        every 500ms do
+            spawn Boid in boids;
+        end
+    with
+        var int x,y,radius,id;
+        loop do
+            await SDL_DT;
+            loop (Boid *)a in boids do
+                var int count = 0;
+                var int response_x = a:quad.x;
+                var int response_y = a:quad.y;
+                loop (Boid *)b in boids do
+                    if _sqrt( _pow(a:quad.x - b:quad.x,2) + _pow(a:quad.y - b:quad.y,2) ) < a:radius then
+                        response_x = response_x + b:quad.x; 
+                        response_y = response_y + b:quad.y; 
+                        count = count + 1;
+                    end
+                end
+                response_x = response_x/count;
+                response_y = response_y/count;
+                a:quad.x = a:quad.x + (a:quad.x - response_x)/100;
+                a:quad.y = a:quad.y + (a:quad.y - response_y)/100;
+            end
+        end    
+    end
+with
+    every SDL_REDRAW do
+        _SDL_RenderPresent(_REN);
+    end
+end
+
+escape 0;

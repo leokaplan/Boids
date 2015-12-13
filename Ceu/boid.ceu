@@ -1,0 +1,22 @@
+class Boid with
+    var _SDL_Rect quad;
+    event (int,int,int,int) vision;
+    event (int,int,int) vision_answer;
+    var int radius = 10;
+do
+    var int id = (int)&this; 
+    _printf("%d\n",id);
+    quad.w = 20;
+    quad.h = 20;
+    quad.x = _rand()%_REN_W;
+    quad.y = _rand()%_REN_H;
+
+    var _SDL_Color clr;
+        clr.r = _rand()%255;
+        clr.g = _rand()%255;
+        clr.b = _rand()%255;
+    every SDL_REDRAW do
+        _SDL_SetRenderDrawColor(_REN, clr.r,clr.g,clr.b,0xFF);
+        _SDL_RenderFillRect(_REN, &quad);
+    end
+end

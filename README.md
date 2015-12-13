@@ -1,1 +1,1 @@
-http://www.kfish.org/boids/pseudocode.html
+Boid implementation in Ceu, lua and moonscript
